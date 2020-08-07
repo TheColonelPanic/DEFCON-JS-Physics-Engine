@@ -3,7 +3,7 @@ function Ball(){
     // Define position and velocity vectors
     this.position = createVector(width/2,height/2);
     this.velocity = createVector(0, 0);
-    this.acceleration = createVector(0.01,0);
+    this.acceleration = createVector(0,0);
 
     // Define Diameter and Radius of ball
     this.d = 40;
@@ -11,8 +11,10 @@ function Ball(){
 
     this.move = function(){
         // add position, acceleration & velocity vectors
+        this.acceleration = p5.Vector.random2D();
         this.velocity.add(this.acceleration);
         this.position.add(this.velocity);
+        this.velocity.limit(5);
     }
 
     // Wall Collision
@@ -26,11 +28,10 @@ function Ball(){
 
     // Astroids style clip movement (Exit left, enter right)
     this.astroid = function(){
-        if (((this.position.x) > width) || ((this.position.x) < 0)){
-            this.position.x = 0;
-        } else if (((this.position.y) > height)||((this.position.y) < 0)){
-            this.position.y = 0;
-        }
+        if (this.position.x > width) this.position.x = 0;
+        if (this.position.x < 0) this.position.x = width;
+        if (this.position.y > height) this.position.y = 0;
+        if (this.position.y < 0) this.position.y = height;
     }
 
     this.render = function(){
