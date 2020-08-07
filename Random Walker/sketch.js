@@ -1,3 +1,7 @@
+// The Purpose of this sketch is to implimetn basic random locomotion by having an agent
+// move randomly around the screen. This is done but by instantiating a walker object
+// and moving its x and Y by random values for every frame
+
 // Constructor Function for Walker
 function Walker(){
 
