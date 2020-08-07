@@ -1,18 +1,21 @@
 // Constructor function for Ball
 function Ball(){
     // Define position and velocity vectors
-    this.position = createVector(width/2,height/2)
-    this.velocity = createVector(2.5, -2)
+    this.position = createVector(width/2,height/2);
+    this.velocity = createVector(0, 0);
+    this.acceleration = createVector(0.01,0);
 
     // Define Diameter and Radius of ball
-    this.d = 40
-    this.r = this.d/2
+    this.d = 40;
+    this.r = this.d/2;
 
     this.move = function(){
-        // add position and velocity vectors
+        // add position, acceleration & velocity vectors
+        this.velocity.add(this.acceleration);
         this.position.add(this.velocity);
     }
 
+    // Wall Collision
     this.bounce = function(){
         if (((this.position.x+this.r) > width) || ((this.position.x-this.r) < 0)){
             this.velocity.x = this.velocity.x * -1;
@@ -21,8 +24,17 @@ function Ball(){
         }
     }
 
+    // Astroids style clip movement (Exit left, enter right)
+    this.astroid = function(){
+        if (((this.position.x) > width) || ((this.position.x) < 0)){
+            this.position.x = 0;
+        } else if (((this.position.y) > height)||((this.position.y) < 0)){
+            this.position.y = 0;
+        }
+    }
+
     this.render = function(){
-        fill(0)
+        fill(0);
         ellipse(this.position.x, this.position.y, this.d, this.d);
     }
 }
@@ -37,8 +49,9 @@ function setup() {
 
 // Draw Loop
 function draw() {
-    background(200)
+    background(200);
+    b.astroid();
     b.move();
-    b.bounce();
+
     b.render();
 }
