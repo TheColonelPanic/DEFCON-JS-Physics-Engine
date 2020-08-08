@@ -96,6 +96,43 @@ Here is a quick rundown of the 4 most important Vector math methods:
 3. `mult()` - Unlike addition and subtraction, multiplying a vector does not require two vectors. It requires a Vector and a Scalar (single argument). Because of this Multiplying a vector is akin to scaling it (a.k.a changing its magnitude)
 4. `mag()` - used for computing the magnitude of a vector using `sqrt(x*x+y*y)` to find the hypotanuse of the right angle formed by a vectors coordinates
 5. `normalize()` - Vector normalization preserves a vector's direction but changes its magnitude to one
+</br>
+</br>
+## Forces
+-----
+A force is a vector that causes an object with mass to experience a change in acceleration. In order to properly simulate the physics based motion of the real world we need to first examine newtons laws of motion.
+
+1. "An object at rest stays at rest and an object in motion stays in motion unless acted upon by another force"
+
+2. force = mass*acceleration
+
+3. For every action there is an equal and opposite reaction
+
+We can now impliment these into our physics engine to have a accurate representation of motion based on physics.
+
+Our agent will be comprised of a constructor function that has several default phyisical properties like position, velocity, and acceleration. We will also need a mass property so that the forces can scale accordingly. Lastly, we will add methods to allow for movement in accordance with newton's 3 laws. We need an `update()` method that will account for velocity and acceleration as they relate to the agents position, and we need an `applyForce()` method to allow the agent to recieve an external force.
+
+```js
+function Agent(){
+    this.pos = createVector(width/2,height/2); // position
+    this.vel = createVector(0, 0); // velocity
+    this.acc = createVector(0,0); // acceleration
+
+    // This function will dictate the objects motion by applying forces
+    this.update = function(){
+        this.vel.add(this.acc); // Velocity + Acceleration
+        this.pos.add(this.vel); // position + Velocity
+    }
+
+    this.applyForce = function(f){
+        this.acc = f
+    }
+
+    // There will also be functions here that dictate the agent's
+    // bounds, rendering, and desires, but these are not motion
+    // related and therefore have been left out
+}
+```
 
 ## Craig Reynolds: Steering Behaviors For Autonomous Agents
 Reynolds thinks of his vehicles as acting with 3 steps

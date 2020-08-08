@@ -1,29 +1,53 @@
 // Constructor function for Ball
-function Ball(){
-    // Define position and velocity vectors
-    this.position = createVector(width/2,height/2);
-    this.velocity = createVector(0, 0);
-    this.acceleration = createVector(0,0);
+function agent(){
 
     // Define Diameter and Radius of ball
     this.d = 40;
     this.r = this.d/2;
 
-    this.move = function(){
+    // Define position and velocity vectors
+    this.position = createVector(random(0,width-this.r),random(0,height-this.r));
+    this.velocity = createVector(0, 0);
+    this.acceleration = createVector(0,0);
+
+    this.update = function(){ 
         // add position, acceleration & velocity vectors
-        this.acceleration = p5.Vector.random2D();
         this.velocity.add(this.acceleration);
+        let newPos = this.position.add(this.velocity);
+        if ((newPos.x+this.r) >= width){
+            this.velocity.x = this.velocity.x * -1;
+        } else if((newPos.x-this.r) <= 0){
+            this.velocity.x = this.velocity.x * -1;
+        } else if ((newPos.y+this.r) >= height){
+            this.velocity.y = this.velocity.y * -1;
+        } else if((newPos.y-this.r) <= 0){
+            this.velocity.y = this.velocity.y * -1;
+        }
         this.position.add(this.velocity);
-        this.velocity.limit(5);
+        this.acceleration = p5.Vector.mult(this.acceleration, 0);
+    }
+
+    // Newton's 2nd Law
+    this.applyForce = function(force){
+        this.acceleration.add(force)
     }
 
     // Wall Collision
-    this.bounce = function(){
-        if (((this.position.x+this.r) > width) || ((this.position.x-this.r) < 0)){
+    this.pong = function(){
+        if ((this.position.x+this.r) > width){
+            this.position.x = width-this.r;
             this.velocity.x = this.velocity.x * -1;
-        } else if (((this.position.y+this.r) > height)||((this.position.y-this.r) < 0)){
+        } else if((this.position.x-this.r) < 0){
+            this.position.x = 0+this.r;
+            this.velocity.x = this.velocity.x * -1;
+        } else if ((this.position.y+this.r) > height){
+            this.position.y = height-this.r;
+            this.velocity.y = this.velocity.y * -1;
+        } else if((this.position.y-this.r) < 0){
+            this.position.y = 0+this.r;
             this.velocity.y = this.velocity.y * -1;
         }
+
     }
 
     // Astroids style clip movement (Exit left, enter right)
@@ -40,19 +64,36 @@ function Ball(){
     }
 }
 
+// Define Agents Array as global variable
+let agents = new Array(1);
+
 // Setup
 function setup() {
     // Create Canvas
-    createCanvas(800, 400);
+    createCanvas(800, 600);
 
-    b = new Ball();
+    // Loop throung agents[] and create objects
+    for (let i=0; i < agents.length; i++){
+        agents[i] = new agent();
+        console.log(agents[i])
+    }
+    console.log(agents)
+    frameRate(10);
 }
 
 // Draw Loop
 function draw() {
     background(200);
-    b.astroid();
-    b.move();
+    
+    // Loop through agents[] and run methods for drawcycle
+    for(i=0; i<agents.length; i++){
+        gravity = createVector(0,1);
+        agents[i].applyForce(gravity)
 
-    b.render();
+        // wind = createVector(0.1,0)
+        // agents[i].applyForce(wind)
+
+        agents[i].update();
+        agents[i].render();
+    }
 }
